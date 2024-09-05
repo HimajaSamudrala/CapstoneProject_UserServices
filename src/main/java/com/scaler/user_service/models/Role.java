@@ -9,4 +9,5 @@ import lombok.Setter;
 @Entity
 public class Role extends BaseModel{
     private String name;
+    //private boolean deleted;
 }

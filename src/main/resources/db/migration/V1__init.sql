@@ -3,21 +3,21 @@ CREATE TABLE `role`
     id              BIGINT AUTO_INCREMENT NOT NULL,
     is_created_at   datetime NULL,
     last_updated_at datetime NULL,
-    is_deleted      BIT(1) NOT NULL,
+    deleted         BIT(1) NOT NULL,
     name            VARCHAR(255) NULL,
     CONSTRAINT pk_role PRIMARY KEY (id)
 );
 
-CREATE TABLE tokens
+CREATE TABLE token
 (
     id              BIGINT AUTO_INCREMENT NOT NULL,
     is_created_at   datetime NULL,
     last_updated_at datetime NULL,
-    is_deleted      BIT(1) NOT NULL,
+    deleted         BIT(1) NOT NULL,
     value           VARCHAR(255) NULL,
     user_id         BIGINT NULL,
     expiry_at       datetime NULL,
-    CONSTRAINT pk_tokens PRIMARY KEY (id)
+    CONSTRAINT pk_token PRIMARY KEY (id)
 );
 
 CREATE TABLE user
@@ -25,7 +25,7 @@ CREATE TABLE user
     id                BIGINT AUTO_INCREMENT NOT NULL,
     is_created_at     datetime NULL,
     last_updated_at   datetime NULL,
-    is_deleted        BIT(1) NOT NULL,
+    deleted           BIT(1) NOT NULL,
     name              VARCHAR(255) NULL,
     email             VARCHAR(255) NULL,
     hashed_password   VARCHAR(255) NULL,
@@ -39,8 +39,8 @@ CREATE TABLE user_roles
     roles_id BIGINT NOT NULL
 );
 
-ALTER TABLE tokens
-    ADD CONSTRAINT FK_TOKENS_ON_USER FOREIGN KEY (user_id) REFERENCES user (id);
+ALTER TABLE token
+    ADD CONSTRAINT FK_TOKEN_ON_USER FOREIGN KEY (user_id) REFERENCES user (id);
 
 ALTER TABLE user_roles
     ADD CONSTRAINT fk_userol_on_role FOREIGN KEY (roles_id) REFERENCES `role` (id);
