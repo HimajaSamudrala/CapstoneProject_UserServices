@@ -3,6 +3,7 @@ package com.scaler.user_service.controllers;
 import com.scaler.user_service.dtos.LoginRequestDto;
 import com.scaler.user_service.dtos.LogoutRequestDto;
 import com.scaler.user_service.dtos.SignupRequestDto;
+import com.scaler.user_service.dtos.UserDto;
 import com.scaler.user_service.exceptions.PasswordNotMatchesException;
 import com.scaler.user_service.exceptions.TokenNotExistOrAlreadyExpired;
 import com.scaler.user_service.exceptions.UserDoesNotExistException;
@@ -10,6 +11,7 @@ import com.scaler.user_service.models.Token;
 import com.scaler.user_service.models.User;
 import com.scaler.user_service.repositories.UserRepository;
 import com.scaler.user_service.services.SelfUserService;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +38,11 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public User signUp(@RequestBody SignupRequestDto signupRequestDto){
+    public UserDto signUp(@RequestBody SignupRequestDto signupRequestDto){
         String email = signupRequestDto.getEmail();
         String fullName = signupRequestDto.getName();
         String password = signupRequestDto.getPassword();
-        return selfUserService.signUp(fullName, email, password);
+        return UserDto.fromUser(selfUserService.signUp(fullName, email, password));
     }
 
     @DeleteMapping("/logout")
@@ -48,5 +50,10 @@ public class UserController {
     {
         selfUserService.logout(logoutRequestDto.getToken());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/validate/{token}")
+    public UserDto validateToken(@PathVariable("token") @NonNull String token) throws TokenNotExistOrAlreadyExpired {
+        return UserDto.fromUser(selfUserService.validateToken(token));
     }
 }

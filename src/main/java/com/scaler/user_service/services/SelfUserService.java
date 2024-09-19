@@ -60,6 +60,11 @@ public class SelfUserService{
             throw new PasswordNotMatchesException("Password doesn't match");
         }
 
+        Token savedToken = getToken(user);
+
+        return savedToken;
+    }
+    private Token getToken(User user) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime newDateTime = now.plus(30, ChronoUnit.DAYS);
         Date expiryDate = Date.from(newDateTime.atZone(ZoneId.systemDefault()).toInstant());
@@ -70,7 +75,6 @@ public class SelfUserService{
         token.setValue(RandomStringUtils.randomAlphanumeric(128));
 
         Token savedToken = tokenRepository.save(token);
-
         return savedToken;
     }
 
@@ -85,5 +89,15 @@ public class SelfUserService{
         Token t = tokenOptional.get();
         t.setDeleted(true);
         tokenRepository.save(t);
+    }
+
+    public User validateToken(String token) throws TokenNotExistOrAlreadyExpired {
+        Optional<Token> tokenOptional = tokenRepository.findByValueAndDeletedEqualsAndExpiryAtGreaterThan(token, false, new Date());
+
+        if(tokenOptional.isEmpty())
+        {
+            throw new TokenNotExistOrAlreadyExpired("Session expired");
+        }
+        return tokenOptional.get().getUser();
     }
 }
