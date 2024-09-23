@@ -37,7 +37,7 @@ public class UserController {
         return selfUserService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
     }
 
-    @PostMapping("/")
+    @PostMapping("/signup")
     public UserDto signUp(@RequestBody SignupRequestDto signupRequestDto){
         String email = signupRequestDto.getEmail();
         String fullName = signupRequestDto.getName();
